@@ -201,3 +201,4 @@ CampusSathi is designed to show both technical depth and user value:
 - AI-powered communication and translation
 - clear deployment path and production-oriented structure
 
+<img width="1024" height="572" alt="image" src="https://github.com/user-attachments/assets/2963c828-7ddb-46b0-803a-eeaae6d0c91d" />
