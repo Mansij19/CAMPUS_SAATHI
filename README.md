@@ -1,14 +1,68 @@
 # CampusSathi
 
-CampusSathi is a MERN stack AI-powered multilingual campus helpdesk for students and administrators.
+CampusSathi is a full-stack, AI-powered campus helpdesk for students and administrators. It combines secure authentication, smart dashboards, AI chat support, notice and form assistance, notifications, and multilingual translation in one responsive web app.
 
-## Implemented modules
+## Why It Stands Out
 
-- Authentication and user management with JWT, bcrypt, profile updates, language preference, and role-based access control.
-- Student and admin dashboards with profile cards, quick actions, recent chats, user stats, registrations, and AI query metrics.
-- AI multilingual helpdesk chatbot with chat history, Gemini primary integration, Featherless fallback integration, Hindi and English support, typing indicator, and auto-scroll.
+- Built for real campus workflows, not just a demo
+- AI chat with Gemini primary support and Featherless fallback
+- Student and admin experiences are separated with role-based access
+- Multilingual support for English, Hindi, Marathi, Tamil, Telugu, and Bengali
+- Clean, mobile-friendly UI built with React, Vite, Tailwind, Node.js, Express, and MongoDB
 
-## Structure
+## Core Features
+
+### Student Experience
+
+- Welcome dashboard with personalized overview
+- Chat assistant access from dashboard and floating widget
+- Saved conversation history
+- Uploaded document tracking
+- Scholarship recommendations
+- Notification center with unread and read states
+- Upcoming deadlines view
+- Recent activity widget
+
+### Admin Experience
+
+- User management table
+- FAQ management
+- Notice management
+- Scholarship management
+- Analytics overview for users, conversations, notices, and forms
+
+### Notification System
+
+- Scholarship deadline alerts
+- Exam registration reminders
+- Notice announcements
+- In-app notification bell and drawer
+- Mark notifications as read
+
+### Translation Engine
+
+- Hindi to English and English to Hindi translation
+- User language preference storage
+- Translate chatbot responses
+- Translate notice summaries
+- Dynamic language selection for supported languages
+
+### AI Assistance
+
+- Gemini-powered chat responses
+- Featherless fallback when Gemini is unavailable
+- Notice summarization
+- Form text extraction and analysis
+- OCR-style document processing for uploaded PDFs and images
+
+## Tech Stack
+
+- Frontend: React, Vite, Tailwind CSS
+- Backend: Node.js, Express
+- Database: MongoDB
+- AI: Gemini Pro API, Featherless API fallback
+
+## Project Structure
 
 ```text
 backend/
@@ -24,31 +78,91 @@ frontend/src/
   context/
   hooks/
   pages/
-  routes/
   services/
 ```
 
-## Environment setup
+## Key Pages
 
-Copy the examples and fill in real secrets:
+- Landing page
+- Login and registration
+- Student dashboard
+- Admin dashboard
+- Chat page
+- Form assistant and form analysis pages
+- Notice summarizer and history pages
+- Profile page
+
+## API Overview
+
+### Authentication
+
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+- `GET /api/auth/profile`
+- `PUT /api/auth/profile`
+
+### Chat
+
+- `POST /api/chat`
+- `GET /api/chat/history`
+- `DELETE /api/chat/history`
+
+### Dashboards
+
+- `GET /api/dashboard/student`
+- `GET /api/dashboard/admin`
+
+### Student Activity
+
+- `GET /api/student/activity`
+
+### Admin Management
+
+- `GET /api/admin/dashboard`
+- `GET /api/admin/users`
+- `POST /api/admin/notices`
+- `POST /api/admin/faqs`
+- `POST /api/admin/scholarships`
+
+### Notifications
+
+- `POST /api/notifications`
+- `GET /api/notifications`
+- `PATCH /api/notifications/:id/read`
+
+### Translation
+
+- `POST /api/translate`
+- `PUT /api/user/language`
+
+## Environment Setup
+
+Copy the example environment files and add your secrets:
 
 ```bash
 cp backend/.env.example backend/.env
 cp frontend/.env.example frontend/.env
 ```
 
-Required backend values:
+### Backend Environment
 
 - `MONGODB_URI`
 - `JWT_SECRET`
 - `GEMINI_API_KEY`
-- `FEATHERLESS_API_KEY` for fallback
-- `ADMIN_EMAIL` and `ADMIN_PASSWORD` to seed the first admin
-- `MAIL_API_KEY`, `MAIL_PROVIDER`, `MAIL_FROM_EMAIL`, and provider settings for successful-login email notifications
+- `FEATHERLESS_API_KEY`
+- `ADMIN_EMAIL`
+- `ADMIN_PASSWORD`
+- `MAIL_PROVIDER`
+- `MAIL_API_KEY`
+- `MAIL_FROM_EMAIL`
+- `MAIL_FROM_NAME`
+- `CLIENT_URL`
 
-For mail, set `MAIL_PROVIDER=resend`, `MAIL_PROVIDER=sendgrid`, or keep `MAIL_PROVIDER=generic` and provide `MAIL_API_URL`.
+### Frontend Environment
 
-## Run locally
+- `VITE_API_URL`
+
+## Run Locally
 
 ```bash
 npm run install:all
@@ -57,40 +171,31 @@ npm run dev:backend
 npm run dev:frontend
 ```
 
-Frontend: `http://localhost:5173`
+- Frontend: `http://localhost:5173`
+- Backend health check: `http://localhost:5000/api/health`
 
-Backend health check: `http://localhost:5000/api/health`
+## Deployment
 
-## API summary
+### Backend
 
-Authentication:
+- Deploy `backend/` to Render, Railway, Fly.io, or any Node host
+- Set production environment variables
+- Run `npm install --omit=dev`
+- Start with `npm start`
 
-- `POST /api/auth/register`
-- `POST /api/auth/login`
-- `GET /api/auth/profile`
-- `PUT /api/auth/profile`
+### Frontend
 
-Chat:
+- Deploy `frontend/` to Vercel, Netlify, or static hosting
+- Set `VITE_API_URL` to the deployed backend API URL ending in `/api`
+- Run `npm run build`
+- Publish `frontend/dist`
 
-- `POST /api/chat`
-- `GET /api/chat/history`
-- `DELETE /api/chat/history`
+## Hackathon Summary
 
-Dashboards:
+CampusSathi is designed to show both technical depth and user value:
 
-- `GET /api/dashboard/student`
-- `GET /api/dashboard/admin`
+- real authentication and role-based access
+- practical dashboards for students and admins
+- AI-powered communication and translation
+- clear deployment path and production-oriented structure
 
-## Deployment notes
-
-Backend:
-
-- Deploy `backend/` to Render, Railway, Fly.io, or another Node host.
-- Set `NODE_ENV=production`, `MONGODB_URI`, `JWT_SECRET`, `CLIENT_URL`, `GEMINI_API_KEY`, and optional Featherless values.
-- Run `npm install --omit=dev` and `npm start`.
-
-Frontend:
-
-- Deploy `frontend/` to Vercel, Netlify, or static hosting.
-- Set `VITE_API_URL` to the deployed backend API URL ending in `/api`.
-- Run `npm run build` and publish `frontend/dist`.
