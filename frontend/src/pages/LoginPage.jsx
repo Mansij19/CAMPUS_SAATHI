@@ -20,7 +20,7 @@ const LoginPage = () => {
     } catch (err) {
       setError(
         err.response?.data?.message ||
-          "Login failed because the backend is not reachable. Start the backend and check MongoDB Atlas configuration."
+          "Login failed because the backend is not reachable. Start the backend and check your local MongoDB connection."
       );
     } finally {
       setLoading(false);

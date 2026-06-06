@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const connectDB = async () => {
-  const uri = process.env.MONGODB_URI;
+  const uri = process.env.MONGODB_URI || "mongodb://localhost:27017/campussathi";
 
   if (!uri || uri.includes("<") || uri.includes(">")) {
     process.env.USE_DEV_STORE = "true";

@@ -9,8 +9,14 @@ import {
   isDevStore
 } from "../utils/devStore.js";
 
+const getJwtSecret = () => {
+  if (process.env.JWT_SECRET) return process.env.JWT_SECRET;
+  if (process.env.NODE_ENV !== "production") return "campussathi-local-development-secret";
+  throw new Error("JWT_SECRET is required");
+};
+
 const signToken = (user) => {
-  return jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, {
+  return jwt.sign({ id: user._id, role: user.role }, getJwtSecret(), {
     expiresIn: process.env.JWT_EXPIRES_IN || "7d"
   });
 };
@@ -26,7 +32,18 @@ const sanitizeUser = (user) => ({
 
 export const register = async (req, res, next) => {
   try {
-    const { name, email, password, preferredLanguage } = req.body;
+    const name = req.body.name?.trim();
+    const email = req.body.email?.trim().toLowerCase();
+    const password = req.body.password;
+    const preferredLanguage = req.body.preferredLanguage || "English";
+
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: "Name, email, and password are required" });
+    }
+
+    if (password.length < 8) {
+      return res.status(400).json({ message: "Password must be at least 8 characters" });
+    }
 
     if (isDevStore()) {
       const user = await devCreateUser({ name, email, password, preferredLanguage, role: "student" });
@@ -61,7 +78,12 @@ export const register = async (req, res, next) => {
 
 export const login = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const email = req.body.email?.trim().toLowerCase();
+    const password = req.body.password;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email and password are required" });
+    }
 
     if (isDevStore()) {
       const user = await devFindUserByEmail(email, true);

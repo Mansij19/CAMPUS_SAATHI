@@ -2,6 +2,12 @@ import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import { devFindUserById, isDevStore } from "../utils/devStore.js";
 
+const getJwtSecret = () => {
+  if (process.env.JWT_SECRET) return process.env.JWT_SECRET;
+  if (process.env.NODE_ENV !== "production") return "campussathi-local-development-secret";
+  throw new Error("JWT_SECRET is required");
+};
+
 export const verifyToken = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization || "";
@@ -11,7 +17,7 @@ export const verifyToken = async (req, res, next) => {
       return res.status(401).json({ message: "Authentication token is required" });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, getJwtSecret());
     if (isDevStore()) {
       const user = await devFindUserById(decoded.id);
 

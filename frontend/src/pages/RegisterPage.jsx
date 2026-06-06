@@ -21,7 +21,7 @@ const RegisterPage = () => {
     } catch (err) {
       setError(
         err.response?.data?.message ||
-          "Registration failed because the backend is not reachable. Start the backend and check MongoDB Atlas configuration."
+          "Registration failed because the backend is not reachable. Start the backend and check your local MongoDB connection."
       );
     } finally {
       setLoading(false);

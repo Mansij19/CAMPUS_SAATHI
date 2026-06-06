@@ -1,4 +1,4 @@
-import { LayoutDashboard, MessageCircle, User } from "lucide-react";
+import { FileSearch, LayoutDashboard, Megaphone, MessageCircle, User } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 
@@ -8,6 +8,8 @@ const Sidebar = ({ open, onClose }) => {
   const links = [
     { to: dashboardPath, label: "Dashboard", icon: LayoutDashboard },
     { to: "/chat", label: "AI Helpdesk", icon: MessageCircle },
+    { to: "/forms", label: "Forms", icon: FileSearch },
+    { to: "/notices", label: "Notices", icon: Megaphone },
     { to: "/profile", label: "Profile", icon: User }
   ];
 
