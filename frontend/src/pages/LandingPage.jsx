@@ -24,9 +24,6 @@ const LandingPage = () => {
                 <Link to="/register" className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white shadow-soft hover:bg-blue-700">
                   Start as Student <ArrowRight size={18} />
                 </Link>
-                <Link to="/login" className="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white/80 px-5 py-3 font-semibold text-slate-800 hover:bg-white dark:border-slate-700 dark:bg-slate-900/80 dark:text-white">
-                  Admin Login
-                </Link>
               </div>
             </div>
             <div className="rounded-3xl border border-white/60 bg-white/75 p-5 shadow-soft backdrop-blur dark:border-slate-700 dark:bg-slate-900/70">
