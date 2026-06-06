@@ -5,6 +5,11 @@ const api = axios.create({
   withCredentials: false
 });
 
+const normalizeApiBaseUrl = (url) => {
+  const trimmed = url.replace(/\/+$/, "");
+  return trimmed.endsWith("/api") ? trimmed : `${trimmed}/api`;
+};
+
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("campussathi_token") || localStorage.getItem("token");
   if (token) {
@@ -12,5 +17,7 @@ api.interceptors.request.use((config) => {
   }
   return config;
 });
+
+api.defaults.baseURL = normalizeApiBaseUrl(api.defaults.baseURL);
 
 export default api;
