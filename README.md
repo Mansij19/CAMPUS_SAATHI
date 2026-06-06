@@ -33,14 +33,6 @@ CampusSathi is a full-stack, AI-powered campus helpdesk for students and adminis
 - Upcoming deadlines view
 - Recent activity widget
 
-### Admin Experience
-
-- User management table
-- FAQ management
-- Notice management
-- Scholarship management
-- Analytics overview for users, conversations, notices, and forms
-
 ### Notification System
 
 - Scholarship deadline alerts
