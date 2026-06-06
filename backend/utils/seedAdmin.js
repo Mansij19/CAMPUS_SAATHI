@@ -15,6 +15,26 @@ const seedAdmin = async () => {
 
   await connectDB();
 
+  if (process.env.USE_DEV_STORE === "true") {
+    const { devFindUserByEmail, devCreateUser } = await import("./devStore.js");
+    const existingAdmin = await devFindUserByEmail(email);
+    if (existingAdmin) {
+      console.log(`Admin already exists (devStore): ${email}`);
+      process.exit(0);
+    }
+
+    await devCreateUser({
+      name,
+      email,
+      password,
+      role: "admin",
+      preferredLanguage: "English"
+    });
+
+    console.log(`Admin created (devStore): ${email}`);
+    process.exit(0);
+  }
+
   const existingAdmin = await User.findOne({ email });
   if (existingAdmin) {
     console.log(`Admin already exists: ${email}`);

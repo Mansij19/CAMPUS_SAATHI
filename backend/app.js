@@ -10,6 +10,10 @@ import chatRoutes from "./routes/chatRoutes.js";
 import dashboardRoutes from "./routes/dashboardRoutes.js";
 import formRoutes from "./routes/formRoutes.js";
 import noticeRoutes from "./routes/noticeRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
+import studentRoutes from "./routes/studentRoutes.js";
+import notificationRoutes from "./routes/notificationRoutes.js";
+import translationRoutes from "./routes/translationRoutes.js";
 import { notFound, errorHandler } from "./utils/errorHandler.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -55,6 +59,10 @@ app.use("/api/chat", chatRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/forms", formRoutes);
 app.use("/api/notices", noticeRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api/student", studentRoutes);
+app.use("/api/notifications", notificationRoutes);
+app.use("/api", translationRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

@@ -1,12 +1,26 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import api from "../services/api.js";
 
 const AuthContext = createContext(null);
 
+const readStoredUser = () => {
+  const storedUser = localStorage.getItem("campussathi_user");
+
+  if (!storedUser) return null;
+
+  try {
+    return JSON.parse(storedUser);
+  } catch (error) {
+    localStorage.removeItem("campussathi_user");
+    localStorage.removeItem("campussathi_token");
+    console.warn("Ignoring invalid stored session:", error.message);
+    return null;
+  }
+};
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
-    const storedUser = localStorage.getItem("campussathi_user");
-    return storedUser ? JSON.parse(storedUser) : null;
+    return readStoredUser();
   });
   const [loading, setLoading] = useState(false);
 
@@ -29,40 +43,42 @@ export const AuthProvider = ({ children }) => {
       .finally(() => setLoading(false));
   }, []);
 
-  const persistSession = (token, nextUser) => {
+  const persistSession = useCallback((token, nextUser) => {
     localStorage.setItem("campussathi_token", token);
+    localStorage.setItem("token", token);
     localStorage.setItem("campussathi_user", JSON.stringify(nextUser));
     setUser(nextUser);
-  };
+  }, []);
 
-  const login = async (payload) => {
+  const login = useCallback(async (payload) => {
     const { data } = await api.post("/auth/login", payload);
     persistSession(data.token, data.user);
     return data.user;
-  };
+  }, [persistSession]);
 
-  const register = async (payload) => {
+  const register = useCallback(async (payload) => {
     const { data } = await api.post("/auth/register", payload);
     persistSession(data.token, data.user);
     return data.user;
-  };
+  }, [persistSession]);
 
-  const updateProfile = async (payload) => {
+  const updateProfile = useCallback(async (payload) => {
     const { data } = await api.put("/auth/profile", payload);
     localStorage.setItem("campussathi_user", JSON.stringify(data.user));
     setUser(data.user);
     return data.user;
-  };
+  }, []);
 
   const logout = () => {
     localStorage.removeItem("campussathi_token");
+    localStorage.removeItem("token");
     localStorage.removeItem("campussathi_user");
     setUser(null);
   };
 
   const value = useMemo(
     () => ({ user, loading, login, register, logout, updateProfile }),
-    [user, loading]
+    [user, loading, login, register, updateProfile]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

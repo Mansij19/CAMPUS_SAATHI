@@ -13,7 +13,72 @@ const defaultData = {
   users: [],
   conversations: [],
   forms: [],
-  notices: []
+  notices: [],
+  notifications: [
+    {
+      id: "seed-notif-1",
+      userId: null,
+      title: "Welcome to CampusSathi",
+      message: "Ask queries to our AI chatbot, upload forms, and check notice summaries in real-time.",
+      status: "unread",
+      createdAt: new Date().toISOString()
+    },
+    {
+      id: "seed-notif-2",
+      userId: null,
+      title: "Upcoming Exam Registrations",
+      message: "Vindhya semester end registrations start next Monday. Keep fee receipts ready.",
+      status: "unread",
+      createdAt: new Date().toISOString()
+    }
+  ],
+  faqs: [
+    {
+      id: "seed-faq-1",
+      question: "How do I get my library card issued?",
+      answer: "Submit your admission slip and one passport-size photo to the central library counter between 10 AM and 4 PM.",
+      category: "Library"
+    },
+    {
+      id: "seed-faq-2",
+      question: "What is the procedure for fee refund?",
+      answer: "Download the fee refund application form, upload it under the Form Assistant, and wait for Accounts Office approval.",
+      category: "Accounts"
+    },
+    {
+      id: "seed-faq-3",
+      question: "Where is the student welfare office?",
+      answer: "The Student Welfare Dean office is located on the first floor of the Main Administrative Building.",
+      category: "General"
+    }
+  ],
+  scholarships: [
+    {
+      id: "seed-schol-1",
+      name: "Merit-cum-Means College Scholarship",
+      description: "Financial assistance for students showing excellent academic track records with household income constraints.",
+      amount: 25000,
+      deadline: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString(),
+      eligibility: "CGPA > 8.0 & annual income < 3 LPA"
+    },
+    {
+      id: "seed-schol-2",
+      name: "Campus Sports Excellence Award",
+      description: "Awarded to student athletes representing the institution at state, national, or international sport tournaments.",
+      amount: 15000,
+      deadline: new Date(Date.now() + 8 * 24 * 60 * 60 * 1000).toISOString(),
+      eligibility: "State/National level championship certification"
+    },
+    {
+      id: "seed-schol-3",
+      name: "Women in STEM Research Grant",
+      description: "Encouraging female students pursuing engineering, computer science, and core technology research degrees.",
+      amount: 40000,
+      deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+      eligibility: "Female students enrolled in B.Tech/M.Tech with active research proposals"
+    }
+  ],
+  activities: []
 };
 
 const now = () => new Date().toISOString();
@@ -35,7 +100,11 @@ const withDefaults = (data) => ({
   users: data.users || [],
   conversations: data.conversations || [],
   forms: data.forms || [],
-  notices: data.notices || []
+  notices: data.notices || [],
+  notifications: data.notifications || defaultData.notifications,
+  faqs: data.faqs || defaultData.faqs,
+  scholarships: data.scholarships || defaultData.scholarships,
+  activities: data.activities || []
 });
 
 const writeStore = async (data) => {
@@ -49,6 +118,8 @@ const publicUser = (user, includePassword = false) => {
   if (!includePassword) delete output.password;
   return output;
 };
+
+const publicRecord = (record) => (record ? { ...record, _id: record.id } : null);
 
 export const isDevStore = () => process.env.USE_DEV_STORE === "true";
 
@@ -161,8 +232,6 @@ export const devListConversations = async () => {
   return data.conversations;
 };
 
-const publicRecord = (record) => (record ? { ...record, _id: record.id } : null);
-
 export const devCreateForm = async (form) => {
   const data = withDefaults(await readStore());
   const timestamp = now();
@@ -242,20 +311,147 @@ export const devFindNotice = async (id, uploadedBy) => {
   );
 };
 
-export const devListNotices = async (uploadedBy) => {
+export const devListNotices = async () => {
   const data = withDefaults(await readStore());
   return data.notices
-    .filter((notice) => notice.uploadedBy === String(uploadedBy))
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
     .map((notice) => publicRecord(notice));
 };
 
-export const devDeleteNotice = async (id, uploadedBy) => {
+export const devDeleteNotice = async (id) => {
   const data = withDefaults(await readStore());
   const before = data.notices.length;
-  data.notices = data.notices.filter(
-    (notice) => !(notice.id === String(id) && notice.uploadedBy === String(uploadedBy))
-  );
+  data.notices = data.notices.filter((notice) => notice.id !== String(id));
   await writeStore(data);
   return data.notices.length !== before;
+};
+
+// --- Notifications ---
+export const devCreateNotification = async ({ userId, title, message }) => {
+  const data = withDefaults(await readStore());
+  const timestamp = now();
+  const record = {
+    id: crypto.randomUUID(),
+    userId: userId ? String(userId) : null,
+    title,
+    message,
+    status: "unread",
+    createdAt: timestamp,
+    updatedAt: timestamp
+  };
+  data.notifications.push(record);
+  await writeStore(data);
+  return publicRecord(record);
+};
+
+export const devListNotifications = async (userId) => {
+  const data = withDefaults(await readStore());
+  return data.notifications
+    .filter((n) => n.userId === null || n.userId === String(userId))
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    .map((n) => publicRecord(n));
+};
+
+export const devMarkNotificationRead = async (id, userId) => {
+  const data = withDefaults(await readStore());
+  const index = data.notifications.findIndex((n) => n.id === String(id) && (n.userId === null || n.userId === String(userId)));
+  if (index === -1) return null;
+  data.notifications[index].status = "read";
+  data.notifications[index].updatedAt = now();
+  await writeStore(data);
+  return publicRecord(data.notifications[index]);
+};
+
+// --- FAQs ---
+export const devCreateFAQ = async ({ question, answer, category }) => {
+  const data = withDefaults(await readStore());
+  const record = {
+    id: crypto.randomUUID(),
+    question,
+    answer,
+    category,
+    createdAt: now(),
+    updatedAt: now()
+  };
+  data.faqs.push(record);
+  await writeStore(data);
+  return publicRecord(record);
+};
+
+export const devListFAQs = async () => {
+  const data = withDefaults(await readStore());
+  return data.faqs.map((f) => publicRecord(f));
+};
+
+export const devDeleteFAQ = async (id) => {
+  const data = withDefaults(await readStore());
+  const before = data.faqs.length;
+  data.faqs = data.faqs.filter((f) => f.id !== String(id));
+  await writeStore(data);
+  return data.faqs.length !== before;
+};
+
+// --- Scholarships ---
+export const devCreateScholarship = async ({ name, description, amount, deadline, eligibility }) => {
+  const data = withDefaults(await readStore());
+  const record = {
+    id: crypto.randomUUID(),
+    name,
+    description,
+    amount: Number(amount),
+    deadline: new Date(deadline).toISOString(),
+    eligibility,
+    createdAt: now(),
+    updatedAt: now()
+  };
+  data.scholarships.push(record);
+  await writeStore(data);
+  return publicRecord(record);
+};
+
+export const devListScholarships = async () => {
+  const data = withDefaults(await readStore());
+  return data.scholarships.map((s) => publicRecord(s));
+};
+
+export const devDeleteScholarship = async (id) => {
+  const data = withDefaults(await readStore());
+  const before = data.scholarships.length;
+  data.scholarships = data.scholarships.filter((s) => s.id !== String(id));
+  await writeStore(data);
+  return data.scholarships.length !== before;
+};
+
+// --- Activities ---
+export const devCreateActivity = async ({ userId, type, description }) => {
+  const data = withDefaults(await readStore());
+  const record = {
+    id: crypto.randomUUID(),
+    userId: String(userId),
+    type,
+    description,
+    createdAt: now()
+  };
+  data.activities.push(record);
+  await writeStore(data);
+  return publicRecord(record);
+};
+
+export const devListActivities = async (userId) => {
+  const data = withDefaults(await readStore());
+  return data.activities
+    .filter((a) => a.userId === String(userId))
+    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    .slice(0, 10)
+    .map((a) => publicRecord(a));
+};
+
+export const devCountAllNotices = async () => {
+  const data = withDefaults(await readStore());
+  return data.notices.length;
+};
+
+export const devCountAllForms = async () => {
+  const data = withDefaults(await readStore());
+  return data.forms.length;
 };

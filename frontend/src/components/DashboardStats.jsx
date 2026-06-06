@@ -1,4 +1,6 @@
 const DashboardStats = ({ stats }) => {
+  if (!stats?.length) return null;
+
   return (
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
       {stats.map((stat) => (

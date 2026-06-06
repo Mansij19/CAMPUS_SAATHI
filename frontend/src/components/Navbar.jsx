@@ -2,6 +2,7 @@ import { Bot, LogOut, Menu, Moon, Sun } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import { useTheme } from "../hooks/useTheme.js";
+import NotificationBell from "./NotificationBell.jsx";
 
 const Navbar = ({ onMenuClick }) => {
   const { user, logout } = useAuth();
@@ -45,6 +46,7 @@ const Navbar = ({ onMenuClick }) => {
           </button>
           {user ? (
             <>
+              <NotificationBell />
               <Link
                 to={user.role === "admin" ? "/dashboard/admin" : "/dashboard/student"}
                 className="hidden rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800 sm:block"

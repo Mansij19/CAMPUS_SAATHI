@@ -35,7 +35,7 @@ const NoticeSummarizerPage = () => {
     <AppLayout>
       <div className="space-y-6">
         <section className="rounded-3xl bg-blue-600 p-6 text-white shadow-soft">
-          <p className="text-sm font-semibold text-blue-100">Module 5</p>
+          <p className="text-sm font-semibold text-blue-100">Summarizer</p>
           <h1 className="mt-2 text-3xl font-black">Notice & Circular Summarizer</h1>
           <p className="mt-2 max-w-2xl text-blue-50">Turn long notices into key highlights, deadlines, eligibility, and action items.</p>
           <div className="mt-5 flex flex-wrap gap-3">

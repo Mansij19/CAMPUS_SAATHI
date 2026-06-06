@@ -15,7 +15,9 @@ const ChatWindow = ({ messages, loading }) => {
         {messages.length === 0 && (
           <div className="mx-auto mt-16 max-w-md text-center">
             <p className="text-2xl font-bold">Ask CampusSathi anything</p>
-            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Try: “Scholarship form ki last date kya hai?”</p>
+            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+              Try: "Scholarship form ki last date kya hai?"
+            </p>
           </div>
         )}
         {messages.map((message, index) => (

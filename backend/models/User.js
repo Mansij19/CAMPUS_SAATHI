@@ -31,7 +31,7 @@ const userSchema = new mongoose.Schema(
     },
     preferredLanguage: {
       type: String,
-      enum: ["English", "Hindi"],
+      enum: ["English", "Hindi", "Marathi", "Tamil", "Telugu", "Bengali"],
       default: "English"
     }
   },

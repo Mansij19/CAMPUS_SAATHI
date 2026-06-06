@@ -20,7 +20,8 @@ const ChatPage = () => {
     try {
       const { data } = await api.post("/chat", { message: content });
       setMessages(data.messages);
-    } catch (_error) {
+    } catch (error) {
+      console.warn("Chat request failed:", error.message);
       setMessages((current) => [
         ...current,
         { role: "assistant", content: "CampusSathi could not answer right now. Please try again shortly.", timestamp: new Date().toISOString() }
